@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Henrique Marques — Dev</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #080b10;
+    --bg2:      #0d1117;
+    --bg3:      #111820;
+    --line:     rgba(255,255,255,0.07);
+    --text:     #e8eaf0;
+    --muted:    #6b7280;
+    --accent:   #3b82f6;
+    --accent2:  #06b6d4;
+    --green:    #10b981;
+    --amber:    #f59e0b;
+    --font-display: 'Syne', sans-serif;
+    --font-mono:    'Space Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-display);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 6%;
+    border-bottom: 1px solid var(--line);
+    background: rgba(8,11,16,0.85);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 8rem 6% 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .hero-content { position: relative; text-align: center; max-width: 800px; }
+
+  .hero-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.3);
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    margin-bottom: 2rem;
+    letter-spacing: 0.1em;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-name {
+    font-size: clamp(3rem, 10vw, 7rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero-name span { color: var(--accent); }
+
+  .hero-title {
+    font-family: var(--font-mono);
+    font-size: clamp(0.85rem, 2vw, 1.1rem);
+    color: var(--muted);
+    margin-top: 1.5rem;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-title b { color: var(--accent2); font-weight: 400; }
+
+  .hero-cta {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    margin-top: 2.5rem;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .btn {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    padding: 0.75rem 2rem;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #2563eb; transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--line);
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+  .hero-scroll {
+    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    animation: fadeUp 0.6s 0.5s ease both;
+  }
+  .scroll-line {
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    animation: scrollPulse 2s infinite;
+  }
+
+  /* ── SECTION BASE ── */
+  section {
+    padding: 6rem 6%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .section-label::before {
+    content: '';
+    display: block; width: 24px; height: 1px;
+    background: var(--accent);
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+
+  .section-sub {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--muted);
+    max-width: 480px;
+    line-height: 1.7;
+  }
+
+  /* ── ABOUT ── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-top: 3rem;
+    align-items: start;
+  }
+
+  .about-text p {
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.9;
+    margin-bottom: 1rem;
+  }
+
+  .about-text p b { color: var(--text); font-weight: 700; }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .stat-box {
+    background: var(--bg2);
+    padding: 1.5rem;
+    display: flex; flex-direction: column;
+  }
+  .stat-num {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 0.4rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── SKILLS ── */
+  #skills { background: var(--bg2); max-width: 100%; padding: 6rem 6%; }
+  #skills > div { max-width: 1200px; margin: 0 auto; }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 3rem;
+  }
+
+  .skill-pill {
+    display: flex; align-items: center; gap: 0.6rem;
+    background: var(--bg3);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text);
+    transition: all 0.2s;
+  }
+  .skill-pill:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .skill-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-ts   { background: #007acc; }
+  .dot-js   { background: #f7df1e; }
+  .dot-java { background: #ed8b00; }
+  .dot-node { background: #68a063; }
+  .dot-react{ background: #61dafb; }
+  .dot-php  { background: #777bb4; }
+  .dot-html { background: #e34f26; }
+  .dot-css  { background: #1572b6; }
+  .dot-git  { background: #f05032; }
+  .dot-sql  { background: #336791; }
+
+  /* ── PROJECTS ── */
+  .projects-header {
+    display: flex; align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .project-card {
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 1.75rem;
+    display: flex; flex-direction: column;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .project-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .project-card:hover { border-color: rgba(59,130,246,0.3); transform: translateY(-4px); }
+  .project-card:hover::before { transform: scaleX(1); }
+
+  .project-top {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .project-lang {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .project-stars {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--amber);
+    display: flex; align-items: center; gap: 0.3rem;
+  }
+
+  .project-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+
+  .project-desc {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.7;
+    flex: 1;
+  }
+
+  .project-footer {
+    display: flex; gap: 0.75rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .project-link {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    margin-top: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    text-decoration: none;
+    transition: gap 0.2s;
+  }
+  .project-link:hover { gap: 0.6rem; }
+
+  /* ── CONTACT ── */
+  #contact { text-align: center; }
+  .contact-inner { max-width: 560px; margin: 0 auto; }
+
+  .contact-links {
+    display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem;
+    margin-top: 2.5rem;
+  }
+
+  .contact-btn {
+    display: flex; align-items: center; gap: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    border: 1px solid var(--line);
+    color: var(--text);
+    background: var(--bg2);
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+  }
+  .contact-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .contact-btn svg { width: 16px; height: 16px; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 2rem 6%;
+    display: flex; align-items: center;
+    justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-copy {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+  .footer-copy b { color: var(--accent); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 5%; }
+    .nav-links { gap: 1.2rem; }
+    .nav-links a { font-size: 0.7rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero-cta { flex-direction: column; align-items: center; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+
+  @media (max-width: 480px) {
+    .nav-links { display: none; }
+    .about-stats { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo">HM.dev</span>
+  <ul class="nav-links">
+    <li><a href="#about">Sobre</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projetos</a></li>
+    <li><a href="#contact">Contato</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <span class="hero-tag">⚡ Disponível para oportunidades</span>
+    <h1 class="hero-name">Henrique<br><span>Marques</span></h1>
+    <p class="hero-title">
+      Desenvolvedor de Software &nbsp;·&nbsp;
+      <b>JavaScript</b> · <b>TypeScript</b> · <b>Java</b>
+    </p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">Ver projetos</a>
+      <a href="#contact" class="btn btn-outline">Falar comigo</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">Sobre mim</div>
+  <h2 class="section-title">Curioso por natureza,<br>construtor por escolha.</h2>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>
+        Sou <b>Henrique Marques</b>, desenvolvedor de software baseado em
+        <b>Sumaré, São Paulo</b>. Tenho foco no desenvolvimento back-end com
+        <b>Node.js</b> e <b>TypeScript</b>, construindo APIs robustas e bem estruturadas.
+      </p>
+      <p>
+        Também tenho experiência com desenvolvimento mobile em <b>Java</b> (Android),
+        sistemas web com <b>PHP</b> e front-end com <b>React</b>. Gosto de projetos
+        que resolvem problemas reais com código limpo e arquitetura pensada.
+      </p>
+      <p>
+        Atualmente estudando padrões de arquitetura de software, boas práticas de
+        API REST e expandindo meu portfólio com projetos práticos. Participei de
+        eventos como o <b>NLW Unite</b> da Rocketseat.
+      </p>
+      <a href="https://github.com/HenriqMarxs" target="_blank" class="btn btn-outline" style="margin-top:1.5rem; display:inline-block;">
+        Ver GitHub completo →
+      </a>
+    </div>
+    <div class="about-stats reveal" style="transition-delay: 0.15s;">
+      <div class="stat-box">
+        <span class="stat-num">22</span>
+        <span class="stat-label">Repositórios públicos</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-num">6+</span>
+        <span class="stat-label">Linguagens utilizadas</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-num">5★</span>
+        <span class="stat-label">Stars recebidas</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-num">BR</span>
+        <span class="stat-label">Sumaré · São Paulo</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div>
+    <div class="section-label">Tecnologias</div>
+    <h2 class="section-title">Stack & ferramentas</h2>
+    <p class="section-sub">Tecnologias que uso no dia a dia para construir soluções back-end, mobile e web.</p>
+    <div class="skills-grid reveal">
+      <div class="skill-pill"><span class="skill-dot dot-ts"></span>TypeScript</div>
+      <div class="skill-pill"><span class="skill-dot dot-js"></span>JavaScript</div>
+      <div class="skill-pill"><span class="skill-dot dot-java"></span>Java</div>
+      <div class="skill-pill"><span class="skill-dot dot-node"></span>Node.js</div>
+      <div class="skill-pill"><span class="skill-dot dot-react"></span>React</div>
+      <div class="skill-pill"><span class="skill-dot dot-php"></span>PHP</div>
+      <div class="skill-pill"><span class="skill-dot dot-html"></span>HTML5</div>
+      <div class="skill-pill"><span class="skill-dot dot-css"></span>CSS3</div>
+      <div class="skill-pill"><span class="skill-dot dot-git"></span>Git & GitHub</div>
+      <div class="skill-pill"><span class="skill-dot dot-sql"></span>SQL</div>
+      <div class="skill-pill"><span class="skill-dot dot-node"></span>Express.js</div>
+      <div class="skill-pill"><span class="skill-dot dot-ts"></span>Fastify</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="projects-header">
+    <div>
+      <div class="section-label">Portfólio</div>
+      <h2 class="section-title">Projetos em destaque</h2>
+    </div>
+    <a href="https://github.com/HenriqMarxs?tab=repositories" target="_blank" class="btn btn-outline">
+      Ver todos →
+    </a>
+  </div>
+
+  <div class="projects-grid">
+
+    <div class="project-card reveal">
+      <div class="project-top">
+        <span class="project-lang">
+          <span class="skill-dot dot-ts" style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#007acc;"></span>
+          TypeScript
+        </span>
+        <span class="project-stars">★ 2</span>
+      </div>
+      <h3 class="project-title">API Gestão de Eventos</h3>
+      <p class="project-desc">
+        API desenvolvida durante o NLW Unite da Rocketseat. Gerenciamento completo de eventos com registro de participantes, check-in e geração de credenciais.
+      </p>
+      <div class="project-footer">
+        <span class="tag">Node.js</span>
+        <span class="tag">Fastify</span>
+        <span class="tag">Prisma</span>
+        <span class="tag">REST</span>
+      </div>
+      <a href="https://github.com/HenriqMarxs/API-Gestao-de-eventos" target="_blank" class="project-link">
+        Ver repositório →
+      </a>
+    </div>
+
+    <div class="project-card reveal" style="transition-delay:0.1s;">
+      <div class="project-top">
+        <span class="project-lang">
+          <span class="skill-dot dot-ts" style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#007acc;"></span>
+          TypeScript
+        </span>
+        <span class="project-stars">★ 1</span>
+      </div>
+      <h3 class="project-title">API Gerenciamento de Tarefas</h3>
+      <p class="project-desc">
+        API REST para gerenciamento de tarefas e metas do dia a dia. CRUD completo com organização por prioridade e status de conclusão.
+      </p>
+      <div class="project-footer">
+        <span class="tag">Node.js</span>
+        <span class="tag">TypeScript</span>
+        <span class="tag">REST API</span>
+      </div>
+      <a href="https://github.com/HenriqMarxs/API-Gerenciamento-de-tarefas" target="_blank" class="project-link">
+        Ver repositório →
+      </a>
+    </div>
+
+    <div class="project-card reveal" style="transition-delay:0.2s;">
+      <div class="project-top">
+        <span class="project-lang">
+          <span class="skill-dot dot-ts" style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#007acc;"></span>
+          TypeScript
+        </span>
+        <span class="project-stars">★ 1</span>
+      </div>
+      <h3 class="project-title">API Rest Vendas</h3>
+      <p class="project-desc">
+        API Restful para gerenciamento de vendas. Controle de produtos, clientes, pedidos e relatórios com arquitetura limpa e bem estruturada.
+      </p>
+      <div class="project-footer">
+        <span class="tag">TypeScript</span>
+        <span class="tag">Node.js</span>
+        <span class="tag">Vendas</span>
+      </div>
+      <a href="https://github.com/HenriqMarxs/API-Rest-Vendas" target="_blank" class="project-link">
+        Ver repositório →
+      </a>
+    </div>
+
+    <div class="project-card reveal" style="transition-delay:0.3s;">
+      <div class="project-top">
+        <span class="project-lang">
+          <span class="skill-dot dot-java" style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#ed8b00;"></span>
+          Java
+        </span>
+        <span class="project-stars">★ 1</span>
+      </div>
+      <h3 class="project-title">To-Dum</h3>
+      <p class="project-desc">
+        Aplicativo mobile Android de gerenciamento de tarefas. Interface intuitiva para organizar e acompanhar atividades do cotidiano.
+      </p>
+      <div class="project-footer">
+        <span class="tag">Java</span>
+        <span class="tag">Android</span>
+        <span class="tag">Mobile</span>
+      </div>
+      <a href="https://github.com/HenriqMarxs/To-Dum" target="_blank" class="project-link">
+        Ver repositório →
+      </a>
+    </div>
+
+    <div class="project-card reveal" style="transition-delay:0.4s;">
+      <div class="project-top">
+        <span class="project-lang">
+          <span class="skill-dot dot-php" style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#777bb4;"></span>
+          PHP
+        </span>
+        <span class="project-stars">★ 1</span>
+      </div>
+      <h3 class="project-title">PHP Acodemy</h3>
+      <p class="project-desc">
+        Plataforma educacional voltada para estudantes de instituições federais. Oferece simulados e materiais de estudo para provas finais.
+      </p>
+      <div class="project-footer">
+        <span class="tag">PHP</span>
+        <span class="tag">Web</span>
+        <span class="tag">Educação</span>
+      </div>
+      <a href="https://github.com/HenriqMarxs/PHP-acodemy" target="_blank" class="project-link">
+        Ver repositório →
+      </a>
+    </div>
+
+    <div class="project-card reveal" style="transition-delay:0.5s;">
+      <div class="project-top">
+        <span class="project-lang">
+          <span class="skill-dot dot-ts" style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#007acc;"></span>
+          TypeScript
+        </span>
+        <span class="project-stars">—</span>
+      </div>
+      <h3 class="project-title">JM-Site</h3>
+      <p class="project-desc">
+        Site institucional completo desenvolvido com React, TypeScript e Vite. Inclui design responsivo, dark/light mode e componentes modernos.
+      </p>
+      <div class="project-footer">
+        <span class="tag">React</span>
+        <span class="tag">TypeScript</span>
+        <span class="tag">Vite</span>
+      </div>
+      <a href="https://github.com/HenriqMarxs/JM-Site" target="_blank" class="project-link">
+        Ver repositório →
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="max-width:100%; background: var(--bg2); padding: 6rem 6%;">
+  <div class="contact-inner reveal">
+    <div class="section-label" style="justify-content:center;">Contato</div>
+    <h2 class="section-title">Vamos construir<br>algo juntos?</h2>
+    <p class="section-sub" style="margin: 1rem auto 0; text-align:center;">
+      Estou aberto a oportunidades, freelas ou só uma boa conversa sobre tecnologia.
+    </p>
+    <div class="contact-links">
+      <a href="mailto:marquesx19@gmail.com" class="contact-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <path d="m2 7 10 7 10-7"/>
+        </svg>
+        marquesx19@gmail.com
+      </a>
+      <a href="https://www.linkedin.com/in/henrique-marques-a09a71245/" target="_blank" class="contact-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
+          <circle cx="4" cy="4" r="2"/>
+        </svg>
+        LinkedIn
+      </a>
+      <a href="https://github.com/HenriqMarxs" target="_blank" class="contact-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+        </svg>
+        GitHub
+      </a>
+      <a href="https://www.instagram.com/henriqmarxs/" target="_blank" class="contact-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+        </svg>
+        Instagram
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p class="footer-copy">© 2026 <b>Henrique Marques</b> — Desenvolvido com ♥ em Sumaré, SP</p>
+  <p class="footer-copy" style="font-family: var(--font-mono);">HenriqMarxs · GitHub</p>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
